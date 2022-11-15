@@ -48,6 +48,11 @@ class Geometry;
   * new position for the Part2DObject.
   * This object can be used stand alone or for constraint
   * geometry as its descend Sketcher::SketchObject .
+  * 
+  * 这是用于平面 (2D) 几何体的 PartShape 的专用版本。 Z 方向必须始终为 0。
+  * 此 2D 几何图形所引用的平面的位置和方向由 Placement 属性定义。 
+  * 它还具有指向支撑面的链接，该支撑面定义了它所在的空间位置。 如果支撑发生变化，静态方法 positionBySupport() 用于计算 Part2DObject 的新位置。
+  * 此对象可以单独使用，也可以作为约束几何对象 Sketcher::SketchObject 的父类。
   */
 
 class PartExport Part2DObject : public Part::Feature, public Part::AttachExtension

@@ -67,9 +67,20 @@ public:
      Many of the methods in this class take geoId and posId parameters.  A GeoId is a unique identifier for
      geometry in the Sketch. geoId >= 0 means an index in the Geometry list. geoId < 0 refers to sketch
      axes and external geometry.  posId is a PointPos enum, documented in Constraint.h.
+
+     Geometry 是一个列表，包含草图中的非外部 Part::Geometry 对象。 该列表可以直接访问，也可以通过 getInternalGeometry() 间接访问。
+     此类中的许多方法都采用 geoId 和 posId 参数。 
+     GeoId 是 Sketch 中几何图形的唯一标识符。 geoId >= 0 表示几何列表中的索引。 geoId < 0 指的是草图轴和外部几何。 
+     posId 是一个 PointPos 枚举，记录在 Constraint.h 中。
     */
     Part    ::PropertyGeometryList   Geometry;
+    /*
+    * 约束列表
+    */
     Sketcher::PropertyConstraintList Constraints;
+    /*
+    * 外部几何体列表
+    */
     App     ::PropertyLinkSubList    ExternalGeometry;
     App     ::PropertyBool           FullyConstrained;
     /** @name methods override Feature */
@@ -217,6 +228,11 @@ public:
         updates the geometry (if updateGeoAfterSolving==true), but does not trigger any recompute.
         @return 0 if no error, if error, the following codes in this order of priority: -4 if overconstrained,
                 -3 if conflicting, -1 if solver error, -2 if redundant constraints
+        
+        求解草图并更新几何，但不是所有相关特征（不重新计算）。
+        当需要重新计算时，recompute 触发 execute() 来求解草图并更新所有相关特征。
+        当只需要求解时（例如，DoF 更改），solve() 求解草图并更新几何图形（如果 updateGeoAfterSolving==true），但不会触发任何重新计算。
+        @return 如果没有错误，则返回 0，如果错误，则以下代码按此优先级顺序排列：-4 如果过度约束，-3 如果冲突，-1 如果求解器错误，-2 如果冗余约束
     */
     int solve(bool updateGeoAfterSolving=true);
     /// set the datum of a Distance or Angle constraint and solve
@@ -458,6 +474,8 @@ public: /* Solver exposed interface */
 public:
     /// returns the geometric elements/vertex which the solver detects as having dependent parameters.
     /// these parameters relate to not fully constraint edges/vertices.
+    /// 返回求解器检测为具有相关参数的几何元素/顶点。
+    /// 这些参数与不完全约束的边/顶点有关。
     void getGeometryWithDependentParameters(std::vector<std::pair<int,PointPos>>& geometrymap);
 
     /// Flag to allow external geometry from other bodies than the one this sketch belongs to
@@ -569,6 +587,13 @@ protected:
      straight lines into point-to-point distance constraints.
 
      \param geoId1, podId1, geoId2, posId2 - The two lines that have just been filleted
+
+     被圆角化的线（Fillet）进行约束转换。
+
+     由于圆角移动了输入几何的端点，现有的约束可能不再有意义。 
+     如果使用preserveCorner=false 调用 Fillet()，则简单地删除约束。
+     但是如果线重合并且preserveCorner=true，我们可以通过将旧端点移动到保留的角点来保留大多数约束，
+     或者将直线上的距离约束转换为点到点的距离约束。
      */
     void transferFilletConstraints(int geoId1, PointPos posId1, int geoId2, PointPos posId2);
 
@@ -668,6 +693,15 @@ private:
     // 2. Functionality adding constraints (of the relevant type) calls addGeometryState to set the status
     // 3. Functionality removing constraints (of the relevant type) calls removeGeometryState to remove the status
     // 4. Save mechanism will ensure persistence.
+    // 
+    // 几何扩展用于在几何上存储由预先存在的约束（如块约束和内部对齐约束）强制执行的状态。 这可以在 ViewProviderSketch 和求解器中实现（更）方便的处理。
+    // 这些函数负责更新Geometry State，目前是Geometry Mode (Blocked) 和Geometry InternalType (BSplineKnot, BSplinePole)
+    //
+    // 处理这个状态的数据生命模型如下：
+    // 1. 恢复时，任何迁移都会被处理以设置旧文件的状态（向后兼容）
+    // 2. 功能添加约束（相关类型）调用 addGeometryState 设置状态
+    // 3. 移除约束（相关类型）的功能调用 removeGeometryState 移除状态
+    // 4.保存机制将确保持久性。
     void addGeometryState(const Constraint* cstr) const;
     void removeGeometryState(const Constraint* cstr) const;
 

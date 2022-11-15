@@ -184,6 +184,9 @@ public:
     int addConstraints(const std::vector<Constraint *> &ConstraintList,
                        const std::vector<bool> & unenforceableConstraints);
     /// add one constraint to the sketch
+    /// 向 Sketch 添加一个约束 constraint
+    /// 根据 constraint 的约束类型（ConstraintType），每种约束都有各自的 add...Constraint() 函数完成具体的添加。
+    /// 具体的约束会构成一个 ConstrDef 数据结构，添加到 Constrs 列表。
     int addConstraint(const Constraint *constraint);
 
     /**

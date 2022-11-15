@@ -60,7 +60,9 @@ public:
     virtual void setSize(int newSize);
     virtual int getSize(void) const;
 
-    /** Sets the property
+    /**
+     * Sets the property
+     * 通常是一组Part::Geometry对象
      */
     void setValue(const Geometry*);
     void setValues(const std::vector<Geometry*>&);

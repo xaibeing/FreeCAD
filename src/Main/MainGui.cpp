@@ -112,6 +112,9 @@ QByteArray myEncoderFunc(const QString &fileName)
 
 int main( int argc, char ** argv )
 {
+    Base::Console().Log("$$$ main $$$ 1\n");
+    printf("$$$ main $$$ 2");
+    std::clog << "Write log message" << std::endl;
 #if defined (FC_OS_LINUX) || defined(FC_OS_BSD)
     // Make sure to setup the Qt locale system before setting LANG and LC_ALL to C.
     // which is needed to use the system locale settings.
@@ -273,6 +276,10 @@ int main( int argc, char ** argv )
         exit(101);
     }
 
+    Base::Console().Log("$$$ main $$$ 1\n");
+    printf("$$$ main $$$ 2");
+    std::clog << "Write log message" << std::endl;
+
     // Run phase ===========================================================
     Base::RedirectStdOutput stdcout;
     Base::RedirectStdLog    stdclog;
@@ -280,6 +287,10 @@ int main( int argc, char ** argv )
     std::streambuf* oldcout = std::cout.rdbuf(&stdcout);
     std::streambuf* oldclog = std::clog.rdbuf(&stdclog);
     std::streambuf* oldcerr = std::cerr.rdbuf(&stdcerr);
+
+    Base::Console().Log("$$$ main $$$ 1\n");
+    printf("$$$ main $$$ 2");
+    std::clog << "Write log message" << std::endl;
 
     try {
         // if console option is set then run in cmd mode
