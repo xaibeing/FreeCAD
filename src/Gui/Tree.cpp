@@ -516,6 +516,9 @@ TreeWidget::TreeWidget(const char* name, QWidget* parent)
         this, SLOT(onSearchObjects()));
 
     // Setup connections
+    // 消息订阅，关联 消息/信号 与 订阅者
+
+    // 创建对象后，更新对象树
     connectNewDocument = Application::Instance->signalNewDocument.connect(boost::bind(&TreeWidget::slotNewDocument, this, bp::_1, bp::_2));
     connectDelDocument = Application::Instance->signalDeleteDocument.connect(boost::bind(&TreeWidget::slotDeleteDocument, this, bp::_1));
     connectRenDocument = Application::Instance->signalRenameDocument.connect(boost::bind(&TreeWidget::slotRenameDocument, this, bp::_1));
@@ -2344,6 +2347,9 @@ void TreeWidget::drawRow(QPainter* painter, const QStyleOptionViewItem& options,
     //}
 }
 
+/*
+* 新建对象后，根据Doc创建树节点
+*/
 void TreeWidget::slotNewDocument(const Gui::Document& Doc, bool isMainDoc)
 {
     if (Doc.getDocument()->testStatus(App::Document::TempDoc))
@@ -3226,6 +3232,7 @@ DocumentItem::DocumentItem(const Gui::Document* doc, QTreeWidgetItem* parent)
     : QTreeWidgetItem(parent, TreeWidget::DocumentType), pDocument(const_cast<Gui::Document*>(doc))
 {
     // Setup connections
+    // 消息订阅，关联 消息/信号 与 订阅者
     connectNewObject = doc->signalNewObject.connect(boost::bind(&DocumentItem::slotNewObject, this, bp::_1));
     connectDelObject = doc->signalDeletedObject.connect(
         boost::bind(&TreeWidget::slotDeleteObject, getTree(), bp::_1));

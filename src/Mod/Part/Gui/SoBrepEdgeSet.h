@@ -53,8 +53,10 @@ public:
 
 protected:
     virtual ~SoBrepEdgeSet() {};
+    // 在Coin渲染遍历期间函数被调用。以任何方式影响渲染状态或想要在 OpenGL 中抛出几何图元的节点会覆盖此方法。
     virtual void GLRender(SoGLRenderAction *action);
     virtual void GLRenderBelowPath(SoGLRenderAction * action);
+    // 此函数执行节点对任何操作的典型操作。
     virtual void doAction(SoAction* action); 
     virtual SoDetail * createLineSegmentDetail(
         SoRayPickAction *action,

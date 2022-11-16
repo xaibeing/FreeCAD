@@ -380,6 +380,9 @@ bool ViewProviderPartExt::allowOverride(const App::DocumentObject &) const {
     return getTypeId() == ViewProviderPartExt::getClassTypeId();
 }
 
+/*
+* 设置可渲染的节点，以及不同的渲染模式
+*/
 void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
 {
     // call parent attach method
@@ -409,6 +412,8 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     // Avoid any Z-buffer artifacts, so that the lines always appear on top of the faces
     // The correct order is Edges, Polygon offset, Faces.
     SoPolygonOffset* offset = new SoPolygonOffset();
+
+    // 设置各种类型的节点树，对应于各种类型的渲染模式
 
     // wireframe node
     wireframe->setName("Edge");

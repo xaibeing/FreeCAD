@@ -158,6 +158,9 @@ Document::Document(App::Document* pcDocument,Application * app)
     d->_editMode = 0;
 
     // Setup the connections
+    // 消息订阅，关联所有 消息/信号 与 订阅者
+
+    // 创建对象，比如 App::Document addObject() 中会发出此信号
     d->connectNewObject = pcDocument->signalNewObject.connect
         (boost::bind(&Gui::Document::slotNewObject, this, bp::_1));
     d->connectDelObject = pcDocument->signalDeletedObject.connect
@@ -166,6 +169,7 @@ Document::Document(App::Document* pcDocument,Application * app)
         (boost::bind(&Gui::Document::slotChangedObject, this, bp::_1, bp::_2));
     d->connectRenObject = pcDocument->signalRelabelObject.connect
         (boost::bind(&Gui::Document::slotRelabelObject, this, bp::_1));
+    // 激活对象，比如 App::Document addObject() 中会发出此信号
     d->connectActObject = pcDocument->signalActivatedObject.connect
         (boost::bind(&Gui::Document::slotActivatedObject, this, bp::_1));
     d->connectActObjectBlocker = boost::signals2::shared_connection_block
@@ -657,6 +661,7 @@ void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 //*****************************************************************************************************
 void Document::slotNewObject(const App::DocumentObject& Obj)
 {
+    // 根据文档对象obj关联的ViewProvider类型，创建派生于ViewProviderDocumentObject的pcProvider
     ViewProviderDocumentObject* pcProvider = static_cast<ViewProviderDocumentObject*>(getViewProvider(&Obj));
     if (!pcProvider) {
         //Base::Console().Log("Document::slotNewObject() called\n");
@@ -693,6 +698,7 @@ void Document::slotNewObject(const App::DocumentObject& Obj)
         try {
             // if successfully created set the right name and calculate the view
             //FIXME: Consider to change argument of attach() to const pointer
+            // pcProvider关联文档对象obj
             pcProvider->attach(const_cast<App::DocumentObject*>(&Obj));
             pcProvider->updateView();
             pcProvider->setActiveMode();
@@ -719,6 +725,7 @@ void Document::slotNewObject(const App::DocumentObject& Obj)
     if (pcProvider) {
         std::list<Gui::BaseView*>::iterator vIt;
         // cycling to all views of the document
+        // 将pcProvider添加到所有ViewInventor3D视图中进行显示
         for (vIt = d->baseViews.begin();vIt != d->baseViews.end();++vIt) {
             View3DInventor *activeView = dynamic_cast<View3DInventor *>(*vIt);
             if (activeView)

@@ -83,6 +83,10 @@ SoBrepEdgeSet::SoBrepEdgeSet()
     SO_NODE_CONSTRUCTOR(SoBrepEdgeSet);
 }
 
+/*
+* 在渲染期间调用。
+* 这里好像主要处理了选中和高亮等状态。
+*/
 void SoBrepEdgeSet::GLRender(SoGLRenderAction *action)
 {
     auto state = action->getState();
@@ -199,6 +203,9 @@ void SoBrepEdgeSet::getBoundingBox(SoGetBoundingBoxAction * action) {
         action->extendBy(bbox);
 }
 
+/*
+* 对给定的顶点数组coords，从索引cindices开始，到cindices+numindices为止，渲染为线段
+*/
 void SoBrepEdgeSet::renderShape(const SoGLCoordinateElement * const coords,
                                 const int32_t *cindices, int numindices)
 {

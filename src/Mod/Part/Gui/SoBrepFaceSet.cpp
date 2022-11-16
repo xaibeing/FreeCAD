@@ -644,6 +644,9 @@ void SoBrepFaceSet::GLRender(SoGLRenderAction *action)
         doTextures = tb.needCoordinates();
         SbBool sendNormals = !mb.isColorOnly() || tb.isFunction();
 
+        // SoIndexedShape.getVertexData()
+        // Convenience method that will fetch data needed for rendering or generating primitives. Takes care of normal cache.
+        // This method was not part of the original SGI Open Inventor API, and is an extension specific for Coin.
         this->getVertexData(state, coords, normals, cindices,
                             nindices, tindices, mindices, numindices,
                             sendNormals, normalCacheUsed);

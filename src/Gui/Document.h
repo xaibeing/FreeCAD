@@ -75,6 +75,7 @@ protected:
     /** @name I/O of the document */
     //@{
     /// This slot is connected to the App::Document::signalNewObject(...)
+    /// signal...是信号触发者，slot...是信号监听者
     void slotNewObject(const App::DocumentObject&);
     void slotDeletedObject(const App::DocumentObject&);
     void slotChangedObject(const App::DocumentObject&, const App::Property&);
