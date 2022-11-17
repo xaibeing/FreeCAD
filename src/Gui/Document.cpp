@@ -659,6 +659,15 @@ void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 //*****************************************************************************************************
 // Document
 //*****************************************************************************************************
+
+/*
+* 接收到 Document::addObject 对象创建后发出的信号，进行GUI相关的处理。
+* Obj是一个 App::DocumentObject，在Part工作台新建基本几何对象时，它代表一个基本几何对象，比如 Part::Cylinder
+* 
+* 根绝文档对象obj关联的 ViewProvider 类型，创建派生于 ViewProviderDocumentObject 的 pcProvider，
+* pcProvider 调用 attach() 关联文档对象obj
+* 将 pcProvider 添加到所有 ViewInventor3D 视图中进行显示
+*/
 void Document::slotNewObject(const App::DocumentObject& Obj)
 {
     // 根据文档对象obj关联的ViewProvider类型，创建派生于ViewProviderDocumentObject的pcProvider

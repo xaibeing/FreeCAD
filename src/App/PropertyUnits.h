@@ -39,6 +39,9 @@ namespace App
 
 /** Float with Unit property
  * This is a property for float with a predefined Unit associated.
+ * 
+ * 带有单位（Base::Unit）的float属性
+ * Part模块创建几何体时，尺寸定义的值采用的就是 PropertyQuantity（进一步派生子类为 App::PropertyQuantityConstraint）
  */
 class AppExport PropertyQuantity : public PropertyFloat
 {
@@ -79,6 +82,8 @@ protected:
 
 /** Float with Unit property
  * This is a property for float with a predefined Unit associated.
+ * 
+ * 在有单位的数值属性（PropertyQuantity）基础上，增加了范围和步长限制（LowerBound, UpperBound, StepSize）
  */
 class AppExport PropertyQuantityConstraint : public PropertyQuantity
 {

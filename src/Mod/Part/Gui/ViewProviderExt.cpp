@@ -906,6 +906,9 @@ void ViewProviderPartExt::unsetEdit(int ModNum)
     }
 }
 
+/*
+* 更新可渲染的数据
+*/
 void ViewProviderPartExt::updateVisual()
 {
     Gui::SoUpdateVBOAction action;
@@ -923,6 +926,7 @@ void ViewProviderPartExt::updateVisual()
     haction.apply(this->lineset);
     haction.apply(this->nodeset);
 
+    // 几何体相应的topo对象。下面将依次处理cShape中的face、edge等数据，转换为可渲染的数据
     TopoDS_Shape cShape = Part::Feature::getShape(getObject());
     if (cShape.IsNull()) {
         coords  ->point      .setNum(0);
@@ -966,10 +970,12 @@ void ViewProviderPartExt::updateVisual()
         TopLoc_Location aLoc;
         cShape.Location(aLoc);
 
+        // 处理每个面（face），计算面的数量，同时记录点的数量
         // count triangles and nodes in the mesh
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(cShape, TopAbs_FACE, faceMap);
         for (int i=1; i <= faceMap.Extent(); i++) {
+            // 对面进行三角化
             Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(TopoDS::Face(faceMap(i)), aLoc);
             if (mesh.IsNull()) {
                 mesh = Part::Tools::triangulationOfFace(TopoDS::Face(faceMap(i)));
@@ -987,6 +993,7 @@ void ViewProviderPartExt::updateVisual()
             numFaces++;
         }
 
+        // 处理每个边（edge），计算边的数量，并记录索引
         // get an indexed map of edges
         TopTools_IndexedMapOfShape edgeMap;
         TopExp::MapShapes(cShape, TopAbs_EDGE, edgeMap);
@@ -1011,6 +1018,10 @@ void ViewProviderPartExt::updateVisual()
             // So, we have to store the hashes of the edges associated to a face.
             // If the hash of a given edge is not in this list we know it's really
             // a free edge.
+            // 处理与面无关的自由边。
+            // 注意：如果对于边 BRep_Tool::Polygon3D 返回有效对象的假设是错误的，例如 发生在由两条边或线创建的直纹表面上。
+            // 因此，我们必须存储与人脸关联的边的哈希值。
+            // 如果给定边的哈希值不在这个列表中，我们就知道它确实是一个自由边。
             int hash = aEdge.HashCode(INT_MAX);
             if (faceEdges.find(hash) == faceEdges.end()) {
                 Handle(Poly_Polygon3D) aPoly = Part::Tools::polygonOfEdge(aEdge, aLoc);
@@ -1021,15 +1032,17 @@ void ViewProviderPartExt::updateVisual()
             }
         }
 
+        // 处理每个顶点（vertices），更新顶点数量
         // handling of the vertices
         TopTools_IndexedMapOfShape vertexMap;
         TopExp::MapShapes(cShape, TopAbs_VERTEX, vertexMap);
         numNodes += vertexMap.Extent();
 
+        // 分配内存，准备填写顶点、法线、面的索引等数据
         // create memory for the nodes and indexes
         coords  ->point      .setNum(numNodes);
         norm    ->vector     .setNum(numNorms);
-        faceset ->coordIndex .setNum(numTriangles*4);
+        faceset ->coordIndex .setNum(numTriangles*4);  // 由 三个顶点索引 + 一个结束符 构成，所以每个三角形有四个元素来表达
         faceset ->partIndex  .setNum(numFaces);
         // get the raw memory for fast fill up
         SbVec3f* verts = coords  ->point       .startEditing();
@@ -1041,11 +1054,13 @@ void ViewProviderPartExt::updateVisual()
         for (int i=0;i < numNorms;i++)
             norms[i]= SbVec3f(0.0,0.0,0.0);
 
+        // 遍历每个面
         int ii = 0,faceNodeOffset=0,faceTriaOffset=0;
         for (int i=1; i <= faceMap.Extent(); i++, ii++) {
             TopLoc_Location aLoc;
             const TopoDS_Face &actFace = TopoDS::Face(faceMap(i));
             // get the mesh of the shape
+            // 每个面三角化为mesh
             Handle (Poly_Triangulation) mesh = BRep_Tool::Triangulation(actFace,aLoc);
             if (mesh.IsNull()) {
                 mesh = Part::Tools::triangulationOfFace(actFace);
@@ -1082,6 +1097,7 @@ void ViewProviderPartExt::updateVisual()
             if (NormalsFromUV)
                 Part::Tools::getPointNormals(actFace, mesh, Normals);
             
+            // 面包含的所有三角形
             for (int g=1;g<=nbTriInFace;g++) {
                 // Get the triangle
                 Standard_Integer N1,N2,N3;
@@ -1092,6 +1108,7 @@ void ViewProviderPartExt::updateVisual()
 #endif
 
                 // change orientation of the triangle if the face is reversed
+                // 需要的话，调整面的朝向（三角形的顶点顺序）
                 if ( orient != TopAbs_FORWARD ) {
                     Standard_Integer tmp = N1;
                     N1 = N2;
@@ -1105,6 +1122,7 @@ void ViewProviderPartExt::updateVisual()
                 gp_Pnt V1(mesh->Node(N1)), V2(mesh->Node(N2)), V3(mesh->Node(N3));
 #endif
 
+                // 三角形每个顶点的法线
                 // get the 3 normals of this triangle
                 gp_Vec NV1, NV2, NV3;
                 if (NormalsFromUV) {
@@ -1134,16 +1152,19 @@ void ViewProviderPartExt::updateVisual()
                     }
                 }
 
+                // 记录法线数据
                 // add the normals for all points of this triangle
                 norms[faceNodeOffset+N1-1] += SbVec3f(NV1.X(),NV1.Y(),NV1.Z());
                 norms[faceNodeOffset+N2-1] += SbVec3f(NV2.X(),NV2.Y(),NV2.Z());
                 norms[faceNodeOffset+N3-1] += SbVec3f(NV3.X(),NV3.Y(),NV3.Z());
 
+                // 记录顶点数据
                 // set the vertices
                 verts[faceNodeOffset+N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
                 verts[faceNodeOffset+N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
                 verts[faceNodeOffset+N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
 
+                // 记录面的三角形索引，由三个顶点索引 + 一个结束符 构成
                 // set the index vector with the 3 point indexes and the end delimiter
                 index[faceTriaOffset*4+4*(g-1)]   = faceNodeOffset+N1-1;
                 index[faceTriaOffset*4+4*(g-1)+1] = faceNodeOffset+N2-1;
@@ -1153,6 +1174,7 @@ void ViewProviderPartExt::updateVisual()
 
             parts[ii] = nbTriInFace; // new part
 
+            // 面包含的每条边
             // handling the edges lying on this face
             TopExp_Explorer Exp;
             for(Exp.Init(actFace,TopAbs_EDGE);Exp.More();Exp.Next()) {
@@ -1202,6 +1224,7 @@ void ViewProviderPartExt::updateVisual()
             faceTriaOffset += nbTriInFace;
         }
 
+        // 自由边
         // handling of the free edges
         for (int i=1; i <= edgeMap.Extent(); i++) {
             const TopoDS_Edge& aEdge = TopoDS::Edge(edgeMap(i));
@@ -1247,7 +1270,8 @@ void ViewProviderPartExt::updateVisual()
         // normalize all normals 
         for (int i = 0; i< numNorms ;i++)
             norms[i].normalize();
-        
+
+        // 线的数据
         std::vector<int32_t> lineSetCoords;
         for (std::map<int, std::vector<int32_t> >::iterator it = lineSetMap.begin(); it != lineSetMap.end(); ++it) {
             lineSetCoords.insert(lineSetCoords.end(), it->second.begin(), it->second.end());

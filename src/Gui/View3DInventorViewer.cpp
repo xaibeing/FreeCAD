@@ -1487,6 +1487,9 @@ SbBool View3DInventorViewer::isBacklight() const
     return this->backlight->on.getValue();
 }
 
+/*
+* 设置场景根节点root从而能渲染场景
+*/
 void View3DInventorViewer::setSceneGraph(SoNode* root)
 {
     inherited::setSceneGraph(root);

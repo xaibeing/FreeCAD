@@ -597,6 +597,9 @@ QString Command::translatedGroupName() const
  *  CommitCommand will be undone (or redone). You can use an alternative name for the
  *  operation default is the Command name.
  *  @see CommitCommand(),AbortCommand()
+ * 
+ * 启动一个事务处理来准备执行一系列命令。
+ * 以便实现 UNDO REDO 功能。
  */
 void Command::openCommand(const char* sCmdName)
 {
@@ -675,6 +678,7 @@ void Command::printCaller(const char *file, int line) {
 }
 
 /// Run a App level Action
+/// 执行一条python命令
 void Command::_runCommand(const char *file, int line, DoCmd_Type eType, const char* sCmd)
 {
     LogDisabler d1;

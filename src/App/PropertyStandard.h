@@ -489,6 +489,8 @@ private:
  * use the more specialized types like e.g. PropertyLength.
  * These properties also fulfill the needs of the unit system.
  * See PropertyUnits.h for all properties with units.
+ * 
+ * 封装一个float属性值
  */
 class AppExport PropertyFloat: public Property
 {

@@ -35,7 +35,9 @@ class SoTransform;
 
 namespace PartGui {
 
-
+/*
+* 提供Part的Cylinder几何体的渲染（实际数据和功能在父类实现，尤其是ViewProviderPartExt）
+*/
 class PartGuiExport ViewProviderCylinderParametric : public ViewProviderPrimitive
 {
     PROPERTY_HEADER(PartGui::ViewProviderCylinderParametric);

@@ -111,6 +111,9 @@ CmdPartBox::CmdPartBox()
     sPixmap       = "Part_Box";
 }
 
+/*
+* 在Part工作台的工具栏上点击Box创建按钮
+*/
 void CmdPartBox::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
@@ -118,6 +121,7 @@ void CmdPartBox::activated(int iMsg)
     cmd = qApp->translate("CmdPartBox","Cube");
     openCommand((const char*)cmd.toUtf8());
 
+    // 在当前活动Document创建一个Box
     runCommand(Doc,"App.ActiveDocument.addObject(\"Part::Box\",\"Box\")");
     cmd = QString::fromLatin1("App.ActiveDocument.ActiveObject.Label = \"%1\"")
         .arg(qApp->translate("CmdPartBox","Cube"));

@@ -63,6 +63,9 @@ class SoBrepFaceSet;
 class SoBrepEdgeSet;
 class SoBrepPointSet;
 
+/*
+* 管理了渲染属性和渲染数据，是各种具体几何体渲染对象（比如Part中创建圆柱体后，其渲染对象 PartGui::ViewProviderCylinderParametric）的基类
+*/
 class PartGuiExport ViewProviderPartExt : public Gui::ViewProviderGeometryObject
 {
     PROPERTY_HEADER_WITH_OVERRIDE(PartGui::ViewProviderPartExt);

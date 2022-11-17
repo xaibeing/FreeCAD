@@ -3845,6 +3845,9 @@ bool Document::recomputeFeature(DocumentObject* Feat, bool recursive)
         return false;
 }
 
+/*
+* 根据传入的对象类型sType创建对象，然后分别触发signalNewObject、signalActivatedObject等信号
+*/
 DocumentObject * Document::addObject(const char* sType, const char* pObjectName,
                                      bool isNew, const char* viewType, bool isPartial)
 {
@@ -3915,6 +3918,8 @@ DocumentObject * Document::addObject(const char* sType, const char* pObjectName,
     if (viewType && viewType[0] != '\0')
         pcObject->_pcViewProviderName = viewType;
 
+    // 触发对象创建信号
+    // 对GUI来说，此信号被 Document::slotNewObject 接受和处理
     signalNewObject(*pcObject);
 
     // do no transactions if we do a rollback!
@@ -3922,6 +3927,7 @@ DocumentObject * Document::addObject(const char* sType, const char* pObjectName,
         signalTransactionAppend(*pcObject, d->activeUndoTransaction);
     }
 
+    // 触发对象激活信号
     signalActivatedObject(*pcObject);
 
     // return the Object

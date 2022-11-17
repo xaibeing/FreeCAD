@@ -179,6 +179,10 @@ public:
     }
 };
 
+/*
+* Part工作台创建基本几何对象时，其创建的 DocumentObject 对象，实际是这里的具体的基本几何对象，比如这里的 Cylinder。
+* Cylinder : public Primitive : public Part::Feature : public App::GeoFeature : public App::DocumentObject
+*/
 class PartExport Cylinder : public Primitive,
                             public PrismExtension
 {
