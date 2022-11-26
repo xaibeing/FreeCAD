@@ -31,6 +31,7 @@ namespace Part
 
 /** Base class of all custom feature classes which are almost used as base
  * for python feature classes.
+ * 所有自定义Feature的基类，几乎用作 python Feature的基类。
  */
 class PartExport CustomFeature : public Part::Feature
 {

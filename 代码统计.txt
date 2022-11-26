@@ -1,0 +1,48 @@
+H:\Project\FreeCAD>h:/Tools/cloc-1.90.exe src
+    9356 text files.
+    9221 unique files.
+    1320 files ignored.
+
+github.com/AlDanial/cloc v 1.90  T=151.17 s (56.7 files/s, 37191.8 lines/s)
+---------------------------------------------------------------------------------------
+Language                             files          blank        comment           code
+---------------------------------------------------------------------------------------
+Qt Linguist                            985           7229              0        3051352
+C++                                   2011         118341         122187         684703
+Python                                1122          62782         105904         513880
+SVG                                   1759            892           2110         436515
+C/C++ Header                          1899          46164          86234         156724
+Qt                                     376             24              0         101766
+XML                                    237            443             65          33214
+C                                       14           5084           7531          28907
+JSON                                    18              9              0          18884
+Fortran 77                               2            218           8877           7757
+HTML                                    11            215             45           2421
+CSV                                     16             66              0           2377
+Markdown                                30            357              0           1048
+CSS                                      4            113             62            814
+diff                                     3            184            595            761
+Bourne Shell                             9            130             29            568
+lex                                      3            128             88            479
+YAML                                     6             27             55            461
+MSBuild script                           1              0              0            419
+JavaScript                               2             76             29            415
+yacc                                     3             57             77            266
+XSD                                      2              0              7            252
+DOS Batch                                9             26              1            247
+Windows Resource File                    3             62             90            210
+CMake                                    8             28             25            177
+make                                     2             36             10            170
+Visual Studio Solution                   4              4              4            117
+reStructuredText                        22             83            154             56
+Objective-C++                            1              0              0             40
+IDL                                      1              4              0             34
+Qt Project                               3              4              2             24
+GLSL                                     1             11             27             22
+PO File                                  1              2              6             18
+ProGuard                                 2              8             13             18
+INI                                      1             12             31             13
+Windows Module Definition                2              3              2             13
+---------------------------------------------------------------------------------------
+SUM:                                  8573         242822         334260        5045142
+---------------------------------------------------------------------------------------

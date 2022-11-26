@@ -36,7 +36,8 @@ namespace Part
 
 // This generic class is defined here so that the Sketcher module can access datum features
 // without creating a dependency on PartDesign
-
+// 参考基准的基类。
+// PartDesign继承并实现 参考点、参考线、参考平面、参考坐标系
 class PartExport Datum : public Part::Feature, public Part::AttachExtension
 {
     PROPERTY_HEADER_WITH_EXTENSIONS(Part::Datum);

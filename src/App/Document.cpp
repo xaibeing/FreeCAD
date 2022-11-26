@@ -3857,7 +3857,7 @@ DocumentObject * Document::addObject(const char* sType, const char* pObjectName,
         str << "'" << sType << "' is not a document object type";
         throw Base::TypeError(str.str());
     }
-
+    // 创建type类型的几何体对象实例（比如一个Part::Cylinder）
     void* typeInstance = type.createInstance();
     if (!typeInstance)
         return nullptr;

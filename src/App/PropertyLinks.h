@@ -566,6 +566,7 @@ private:
  *
  *  @note Links that are invalid in respect to the scope of this property is set to are not rejected.
  *        They are only detected to be invalid and prevent the feature from recomputing.
+ * 链接Document中的Objects and Features
  */
 class AppExport PropertyLink : public PropertyLinkBase
 {

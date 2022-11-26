@@ -44,6 +44,10 @@ namespace Part
  * The two most important facemaking routines then was: one in Part Extrude,
  * and one in PartDesign (there, it is used in every sketch-based feature).
  * Plus, another one (new) was needed for filling 2D offset.
+ * FaceMaker 类是实现各种“智能”face制作例程的基类。
+ * 创建它是为了解决多个私有实现的带有孔的面孔的问题，这些实现非常复杂。
+ * 当时最重要的两个面部制作例程是：一个在 Part Extrude 中，一个在 PartDesign 中（在那里，它用于每个基于草图的特征）。
+ * 另外，还需要另一个（新的）来填充 2D 偏移量。
  */
 class PartExport FaceMaker: public BRepBuilderAPI_MakeShape, public Base::BaseClass
 {

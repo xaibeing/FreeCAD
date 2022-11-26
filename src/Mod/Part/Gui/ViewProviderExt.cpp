@@ -927,6 +927,7 @@ void ViewProviderPartExt::updateVisual()
     haction.apply(this->nodeset);
 
     // 几何体相应的topo对象。下面将依次处理cShape中的face、edge等数据，转换为可渲染的数据
+    // todo，如何获取到Document/Feature创建，并如何传递到Gui的TopoDS_Shape对象？
     TopoDS_Shape cShape = Part::Feature::getShape(getObject());
     if (cShape.IsNull()) {
         coords  ->point      .setNum(0);

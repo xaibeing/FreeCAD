@@ -68,6 +68,9 @@ void PrismExtension::extensionOnChanged(const App::Property* prop)
     App::DocumentObjectExtension::extensionOnChanged(prop);
 }
 
+/*
+* 构建Prism几何体。其底面是face，沿(FirstAngle, SecondAngle, z)方向挤出。
+*/
 TopoDS_Shape PrismExtension::makePrism(double height, const TopoDS_Face& face) const
 {
     // the direction vector for the prism is the height for z and the given angle

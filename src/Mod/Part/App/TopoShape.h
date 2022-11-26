@@ -86,6 +86,7 @@ public:
 
 
 /** The representation for a CAD Shape
+ *  封装了OCC的TopoDS_Shape对象
  */
 class PartExport TopoShape : public Data::ComplexGeoData
 {

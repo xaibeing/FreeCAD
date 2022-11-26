@@ -37,6 +37,12 @@ namespace Part
 // To migrate data:
 // 1. Add an enum bit to indicate the type of migration type
 // 2. Add the data members to store the information and accessors
+// 
+// 这是一个仅适用于 C++ 的轻量级几何扩展，用于迁移存储在零件 WB 中并应迁移到另一个 WB 的信息
+// 它的设计使得单个扩展可以迁移不同类型的数据。
+// 迁移数据：
+// 1. 添加一个枚举位来表示迁移类型的类型
+// 2. 添加数据成员来存储信息和访问器
 class PartExport GeometryMigrationExtension : public Part::GeometryExtension
 {
     TYPESYSTEM_HEADER_WITH_OVERRIDE();

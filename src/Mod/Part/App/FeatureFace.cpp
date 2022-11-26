@@ -82,12 +82,14 @@ App::DocumentObjectExecReturn *Face::execute()
                 return new App::DocumentObjectExecReturn("Linked shape object is empty");
         }*/
 
+        // 如果是组合体，遍历添加组合中的各shape
         if(links.size() == 1 && shape.ShapeType() == TopAbs_COMPOUND)
             facemaker->useCompound(TopoDS::Compound(shape));
         else
             facemaker->addShape(shape);
     }
 
+    // 构建face，采用特定的算法。FaceMaker有几个子类。
     facemaker->Build();
 
     TopoDS_Shape aFace = facemaker->Shape();

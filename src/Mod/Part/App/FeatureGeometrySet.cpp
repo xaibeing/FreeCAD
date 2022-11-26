@@ -48,6 +48,7 @@ App::DocumentObjectExecReturn *FeatureGeometrySet::execute(void)
 
     const std::vector<Geometry*> &Geoms = GeometrySet.getValues();
 
+    // 将多个Geometry做Boolean fusion
     bool first = true;
     for(std::vector<Geometry*>::const_iterator it=Geoms.begin();it!=Geoms.end();++it){
         TopoDS_Shape sh = (*it)->toShape();

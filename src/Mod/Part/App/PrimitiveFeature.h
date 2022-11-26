@@ -207,6 +207,10 @@ public:
     //@}
 };
 
+/*
+* 棱柱
+* 多边形沿直线挤出
+*/
 class PartExport Prism : public Primitive,
                          public PrismExtension
 {

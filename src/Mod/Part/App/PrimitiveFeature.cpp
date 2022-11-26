@@ -529,11 +529,14 @@ App::DocumentObjectExecReturn *Cylinder::execute(void)
     if (Angle.getValue() < Precision::Confusion())
         return new App::DocumentObjectExecReturn("Rotation angle of cylinder too small");
     try {
+        // OCC 的 BRep Cylinder 构造器
         BRepPrimAPI_MakeCylinder mkCylr(Radius.getValue(),
                                         Height.getValue(),
                                         Base::toRadians<double>(Angle.getValue()));
+        // OCC 的 BRep Cylinder 构造算法
         // the direction vector for the prism is the height for z and the given angle
         BRepPrim_Cylinder prim = mkCylr.Cylinder();
+        // 调用OCC的 BRepPrimAPI_MakePrism.shape() 构建出 Cylinder（一个TopoDS_Shape对象）
         TopoDS_Shape ResultShape = makePrism(Height.getValue(), prim.BottomFace());
         this->Shape.setValue(ResultShape);
     }
@@ -624,6 +627,9 @@ short RegularPolygon::mustExecute() const
     return Primitive::mustExecute();
 }
 
+/*
+* 正多边形
+*/
 App::DocumentObjectExecReturn *RegularPolygon::execute(void)
 {
     // Build a regular polygon
@@ -815,6 +821,9 @@ short Helix::mustExecute() const
     return Primitive::mustExecute();
 }
 
+/*
+* 螺旋（界面上看起来是螺线线，但下面makeSpiralHelix返回的是TopoDS_Shape）
+*/
 App::DocumentObjectExecReturn *Helix::execute(void)
 {
     try {

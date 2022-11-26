@@ -229,6 +229,9 @@ Base::Vector3d Extrusion::calculateShapeNormal(const App::PropertyLink& shapeLin
     return Base::Vector3d(normal.X(), normal.Y(), normal.Z());
 }
 
+/*
+* 对source采用参数params执行挤出
+*/
 TopoShape Extrusion::extrudeShape(const TopoShape& source, const Extrusion::ExtrusionParameters& params)
 {
     TopoDS_Shape result;
@@ -247,7 +250,7 @@ TopoShape Extrusion::extrudeShape(const TopoShape& source, const Extrusion::Extr
         myShape = BRepBuilderAPI_Copy(myShape).Shape();
 
         std::list<TopoDS_Shape> drafts;
-        bool isPartDesign = false; // there is an OCC bug with single-edge wires (circles) we need to treat differently for PD and Part
+        bool isPartDesign = false; // there is an OCC bug with single-edge wires (circles) we need to treat differently for PartDesign and Part
         ExtrusionHelper::makeDraft(myShape, params.dir, params.lengthFwd, params.lengthRev,
                                    params.taperAngleFwd, params.taperAngleRev, params.solid, drafts, isPartDesign);
         if (drafts.empty()) {
@@ -311,14 +314,20 @@ TopoShape Extrusion::extrudeShape(const TopoShape& source, const Extrusion::Extr
     return TopoShape(result);
 }
 
+/*
+* 计算挤出特征
+*/
 App::DocumentObjectExecReturn* Extrusion::execute()
 {
+    // 用于挤出的基本形状
     App::DocumentObject* link = Base.getValue();
     if (!link)
         return new App::DocumentObjectExecReturn("No object linked");
 
     try {
+        // 确定挤出参数
         Extrusion::ExtrusionParameters params = computeFinalParameters();
+        // 执行挤出
         TopoShape result = extrudeShape(Feature::getShape(link), params);
         this->Shape.setValue(result);
         return App::DocumentObject::StdReturn;
